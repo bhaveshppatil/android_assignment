@@ -2,6 +2,7 @@ package com.perennial.movieapp.ui.repository
 
 import com.perennial.movieapp.shared.model.data.model.MovieResponse
 import com.perennial.movieapp.shared.model.data.remote.MovieAPIService
+import com.perennial.movieapp.shared.model.data.review.MovieReviewResponse
 import retrofit2.Response
 
 class MovieRepositoryImpl(
@@ -20,7 +21,7 @@ class MovieRepositoryImpl(
         return apiService.getNowPlayingMovies()
     }
 
-    override suspend fun getMovieReviews(movieId: String): Response<MovieResponse> {
+    override suspend fun getMovieReviews(movieId: String): Response<MovieReviewResponse> {
         return apiService.getMovieReviews(movieId)
     }
 

@@ -73,13 +73,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // DI (Koin)
-    // Koin main features for Android
     implementation "io.insert-koin:koin-android:$koin_android_version"
-// Java Compatibility
     implementation "io.insert-koin:koin-android-compat:$koin_android_version"
-// Jetpack WorkManager
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
-// Navigation Graph
     implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
 
     // Shimmer
@@ -93,5 +89,6 @@ dependencies {
     debugImplementation "com.github.ChuckerTeam.Chucker:library:3.4.0"
     releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.4.0"
 
+    implementation 'com.github.mahimrocky:ShowMoreText:1.0.2'
 
 }

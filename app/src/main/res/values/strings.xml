@@ -3,4 +3,8 @@
     <string name="popular_movie">Popular Movie</string>
     <string name="top_rated">Top Rated</string>
     <string name="now_playing">Now Playing</string>
+    <string name="no_review_found_for_this_movie">No review found for this movie</string>
+    <string name="review">Review</string>
+    <string name="label_text_expand">More</string>
+    <string name="label_text_collapse">Less</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.perennial.movieapp.ui
+package com.perennial.movieapp.ui.clicklistener
 
 import com.perennial.movieapp.shared.model.MovieItemModel
 

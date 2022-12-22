@@ -1,6 +1,7 @@
 package com.perennial.movieapp.shared.model.data.remote
 
 import com.perennial.movieapp.shared.model.data.model.MovieResponse
+import com.perennial.movieapp.shared.model.data.review.MovieReviewResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -18,6 +19,6 @@ interface MovieAPIService {
     @GET("movie/{movieId}/reviews")
     suspend fun getMovieReviews(
         @Path("movieId") movieId: String
-    ): Response<MovieResponse>
+    ): Response<MovieReviewResponse>
 
 }

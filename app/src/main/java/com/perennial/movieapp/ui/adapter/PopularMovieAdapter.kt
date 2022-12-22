@@ -8,7 +8,7 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.perennial.movieapp.databinding.PopularMovieContainerBinding
 import com.perennial.movieapp.shared.model.MovieItemModel
-import com.perennial.movieapp.ui.MovieItemClick
+import com.perennial.movieapp.ui.clicklistener.MovieItemClick
 
 class PopularMovieAdapter(
     private val onItemClick: MovieItemClick

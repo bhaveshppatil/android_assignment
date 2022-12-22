@@ -1,18 +1,18 @@
 package com.perennial.movieapp.ui.home
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.perennial.movieapp.R
 import com.perennial.movieapp.databinding.ActivityMainBinding
+import com.perennial.movieapp.detail.MovieDetailActivity
 import com.perennial.movieapp.shared.model.MovieItemModel
-import com.perennial.movieapp.ui.MovieItemClick
+import com.perennial.movieapp.ui.clicklistener.MovieItemClick
 import com.perennial.movieapp.ui.adapter.MovieHorizontalAdapter
 import com.perennial.movieapp.ui.adapter.PopularMovieAdapter
 import com.perennial.movieapp.ui.viewModel.MainViewModel
@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(), MovieItemClick {
         popularMovieAdapter = PopularMovieAdapter(this)
         topRatedAdapter = MovieHorizontalAdapter(this)
         nowPlayingAdapter = MovieHorizontalAdapter(this)
+        binding.toolbar.title = "Pere Movies"
         setUpRecyclerView()
         setUpObserver()
         setupListener()
@@ -66,9 +67,9 @@ class MainActivity : AppCompatActivity(), MovieItemClick {
         val view = findViewById<View>(R.id.layout_popular_error)
         val view1 = findViewById<View>(R.id.layout_now_playing_error)
         val view2 = findViewById<View>(R.id.layout_top_rated_error)
-        val popularErrorBtn =  view.findViewById<Button>(R.id.btn_reload)
-        val nowPlayingBtn =  view1.findViewById<Button>(R.id.btn_reload)
-        val topRatedBtn =  view2.findViewById<Button>(R.id.btn_reload)
+        val popularErrorBtn = view.findViewById<Button>(R.id.btn_reload)
+        val nowPlayingBtn = view1.findViewById<Button>(R.id.btn_reload)
+        val topRatedBtn = view2.findViewById<Button>(R.id.btn_reload)
 
         with(binding) {
             popularErrorBtn.setOnClickListener {
@@ -180,7 +181,8 @@ class MainActivity : AppCompatActivity(), MovieItemClick {
 
 
     override fun onItemClick(result: MovieItemModel) {
-
+        val intent = Intent(this, MovieDetailActivity::class.java)
+        intent.putExtra("movieItemModel", result)
+        startActivity(intent)
     }
-
 }

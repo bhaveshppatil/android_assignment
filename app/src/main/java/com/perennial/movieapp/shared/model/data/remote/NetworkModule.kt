@@ -1,6 +1,5 @@
 package com.perennial.movieapp.shared.model.data.remote
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.perennial.movieapp.BuildConfig
 import com.perennial.movieapp.shared.model.data.remote.NetworkConstant.API_KEY
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

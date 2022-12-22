@@ -1,4 +1,4 @@
-package com.perennial.movieapp.core
+package com.perennial.movieapp.module
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext

@@ -1,9 +1,5 @@
 package com.perennial.movieapp.util
 
-/**
- * Taken from
- * https://android.jlelse.eu/architecture-components-easy-mapping-of-actions-and-ui-state-207663e3fdd
- */
 sealed class Action {
     object Load : Action()
     object Refresh : Action()
