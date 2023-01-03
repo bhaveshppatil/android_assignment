@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d55bc60d-9126-44fc-acb0-e6f882654a4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/KotlinJavaRuntime.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DesignPatterns.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder/Driver.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder/Employee.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder/LaptopBuilder.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/AltrozCar.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/FactoryDriver.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/HarrierCar.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/NexonCar.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/Specification.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/TataFactory.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/PrintingTextChangedListener.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/TextChangedListener.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/TextDriver.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/TextView.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Interface" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2Jo353sP7B1TjvcPN3QZkhbUyaj" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Kotlin.TextDriverKt">
+    <configuration name="Driver" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="design_pattern.builder.Driver" />
+      <module name="DesignPatterns" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DriverKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="design_pattern.builder.DriverKt" />
+      <module name="DesignPatterns" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FactoryDriverKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="design_pattern.factory.FactoryDriverKt" />
+      <module name="DesignPatterns" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TextDriverKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="design_pattern.observer.TextDriverKt" />
+      <module name="DesignPatterns" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Kotlin.TextDriverKt" />
+        <item itemvalue="Kotlin.FactoryDriverKt" />
+        <item itemvalue="Kotlin.DriverKt" />
+        <item itemvalue="Kotlin.Driver" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d55bc60d-9126-44fc-acb0-e6f882654a4c" name="Changes" comment="" />
+      <created>1672730422655</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1672730422655</updated>
+    </task>
+    <servers />
+  </component>
+</project>
