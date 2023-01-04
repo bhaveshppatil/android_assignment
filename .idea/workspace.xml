@@ -4,30 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d55bc60d-9126-44fc-acb0-e6f882654a4c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/KotlinJavaRuntime.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DesignPatterns.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder/Driver.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder/Employee.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder/LaptopBuilder.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/AltrozCar.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/FactoryDriver.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/HarrierCar.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/NexonCar.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/Specification.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/factory/TataFactory.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/PrintingTextChangedListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/TextChangedListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/TextDriver.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design_pattern/observer/TextView.kt" afterDir="false" />
+    <list default="true" id="d55bc60d-9126-44fc-acb0-e6f882654a4c" name="Changes" comment="Design pattern codebase implementation">
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder1/Laptop.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder1/Person.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/design_pattern/builder1/PersonDriver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/design_pattern/builder/LaptopBuilder.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,10 +21,16 @@
       <list>
         <option value="Kotlin Interface" />
         <option value="Kotlin Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="design_pattern" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -56,14 +44,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Kotlin.TextDriverKt">
+}</component>
+  <component name="RunManager" selected="Application.PersonDriver">
+    <configuration name="PersonDriver" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="design_pattern.builder1.PersonDriver" />
+      <module name="DesignPatterns" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="design_pattern.builder1.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Driver" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="design_pattern.builder.Driver" />
       <module name="DesignPatterns" />
@@ -94,6 +95,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PersonDriver" />
         <item itemvalue="Kotlin.TextDriverKt" />
         <item itemvalue="Kotlin.FactoryDriverKt" />
         <item itemvalue="Kotlin.DriverKt" />
@@ -113,6 +115,18 @@
       <option name="presentableId" value="Default" />
       <updated>1672730422655</updated>
     </task>
+    <task id="LOCAL-00001" summary="Design pattern codebase implementation">
+      <created>1672750740713</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1672750740713</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Design pattern codebase implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Design pattern codebase implementation" />
   </component>
 </project>
