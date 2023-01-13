@@ -1,110 +1,125 @@
-package com.perennial.downloadfilenotification
+package com.perennial.asynctasknotification
 
-import android.graphics.Bitmap
+import android.app.Dialog
+import android.app.ProgressDialog
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
-import android.widget.ImageView
+import android.os.Environment
+import android.os.PowerManager
+import android.util.Log
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.Builder
-import androidx.core.app.NotificationManagerCompat
+import androidx.databinding.DataBindingUtil
+import com.perennial.downloadfilenotification.R
+import com.perennial.downloadfilenotification.databinding.ActivityMainBinding
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var notificationManager: NotificationManagerCompat
-    private lateinit var notification: Builder
-    private val IMAGE_URL =
-        "https://cdn.pixabay.com/photo/2017/08/01/15/03/global-2566114_960_720.jpg"
-    val channelID: String = "Download Notification"
-    private lateinit var imageView: ImageView
 
+    private lateinit var mProgressDialog: ProgressDialog
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        notificationManager = NotificationManagerCompat.from(this)
-        imageView = findViewById(R.id.ivDownloadPicture)
-        start()
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        mProgressDialog = ProgressDialog(this)
+        val button = findViewById<Button>(R.id.notificationButton)
+
+        button.setOnClickListener {
+            MyAsyncTask(this).execute("https://shanniz.github.io/courses/mobileappdev/MAD_AsyncTask_Notifications.pdf")
+        }
     }
 
-    private fun start() {
-        DownloadTask().execute(IMAGE_URL)
-    }
+    inner class MyAsyncTask(context: Context) : AsyncTask<String?, Int?, String?>() {
+        private val context: Context
 
-    inner class DownloadTask() : AsyncTask<String, Int, String>() {
+        init {
+            this.context = context
+        }
 
         override fun onPreExecute() {
             super.onPreExecute()
-            notification = NotificationCompat.Builder(this@MainActivity, channelID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Perennial System")
-                .setContentText("File Downloading...")
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setAutoCancel(true)
-                .setProgress(100, 0, false)
-            notificationManager.notify(1, notification.build())
+            mProgressDialog.setMessage("Downloading file...")
+            mProgressDialog.setIcon(R.drawable.ic_launcher_background)
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            mProgressDialog.show()
         }
 
-        override fun doInBackground(vararg strings: String?): String? {
+        override fun doInBackground(vararg sUrl: String?): String? {
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+            val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, javaClass.name)
+            wl.acquire()
             try {
-
-                var i = 10
-                    while (i <= 100) {
-                        try {
-                            Thread.sleep(1000)
-                            publishProgress(i)
-                        } catch (e: InterruptedException) {
-                            e.printStackTrace()
-                        }
-                        i += 10
+                var input: InputStream? = null
+                var output: OutputStream? = null
+                var connection: HttpURLConnection? = null
+                try {
+                    val url = URL(sUrl[0])
+                    connection = url.openConnection() as HttpURLConnection
+                    connection.connect()
+                    // expect HTTP 200 OK, so we don't mistakenly save error report
+                    // instead of the file
+                    if (connection!!.responseCode != HttpURLConnection.HTTP_OK) return ("Server returned HTTP " + connection.responseCode
+                            + " " + connection.responseMessage)
+                    // this will be useful to display download percentage
+                    // might be -1: server did not report the length
+                    val fileLength = connection.contentLength
+                    // download the file
+                    input = connection.inputStream
+                    output = FileOutputStream(Environment.getExternalStorageDirectory().absolutePath +"/download.pdf")
+                    Log.d("Filepath", output.toString())
+                    val data = ByteArray(4096)
+                    var total: Long = 0
+                    var count: Int
+                    while (input.read(data).also { count = it } != -1) {
+                        // allow canceling with back button
+                        if (isCancelled) return null
+                        total += count.toLong()
+                        // publishing the progress....
+                        if (fileLength > 0) // only if total length is known
+                            publishProgress((total * 100 / fileLength).toInt())
+                        output.write(data, 0, count)
                     }
-                }catch (e: Exception){
-                    e.printStackTrace()
+                } catch (e: Exception) {
+                    return e.toString()
+                } finally {
+                    try {
+                        output?.close()
+                        input?.close()
+                    } catch (ignored: IOException) {
+                    }
+                    connection?.disconnect()
                 }
-
-                /*  val url = URL(IMAGE_URL)
-                val conexion: URLConnection = url.openConnection()
-                conexion.connect()
-                val lenghtOfFile: Int = conexion.contentLength
-                val dir = applicationContext.cacheDir
-                Log.d("PereLength", "Length of file: $lenghtOfFile")
-                val input: InputStream = BufferedInputStream(url.openStream())
-                val output: OutputStream =
-                    FileOutputStream("download.jpg")
-
-                Log.d("PereLength", "Length of file: /download.jpg")
-                val data = ByteArray(1024)
-                var total: Long = 0
-                while (input.read(data).also { count = it } != -1) {
-                    total += count.toLong()
-                    publishProgress( (total * 100 / lenghtOfFile).toInt())
-                    output.write(data, 0, count)
-                }
-
-                val options = BitmapFactory.Options()
-                options.inPreferredConfig = Bitmap.Config.RGB_565
-                bitmapImage = BitmapFactory.decodeStream(
-                    input, null,
-                    options*/
-            return ""
+            } finally {
+                wl.release()
+            }
+            return null
         }
 
-        override fun onProgressUpdate(vararg values: Int?) {
-            super.onProgressUpdate(*values)
-            values[0]?.toInt()?.let { notification.setProgress(100, it, false) }
-            notification.setContentText("${values[0]} %")
-            notificationManager.notify(1, notification.build())
+        override fun onProgressUpdate(vararg progress: Int?) {
+            super.onProgressUpdate(*progress)
+            // if we get here, length is known, now set indeterminate to false
+            mProgressDialog.setIndeterminate(false)
+            mProgressDialog.setMax(100)
+            mProgressDialog.setProgress(progress[0]!!)
         }
 
         override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            notification.setContentText("File Download Completed")
-                .setProgress(0, 0, false)
-                .setOngoing(false)
-
-            notificationManager.notify(1, notification.build())
+            mProgressDialog.dismiss()
+            if (result != null) Toast.makeText(
+                context,
+                "Download error: $result",
+                Toast.LENGTH_LONG
+            ).show() else Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show()
         }
     }
 }
