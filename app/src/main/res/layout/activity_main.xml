@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swAirplaneMode"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            android:background="@color/design_default_color_primary_variant"
+            android:paddingStart="20dp"
+            android:text="State"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swWifiManager"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@id/swAirplaneMode"
+            android:layout_margin="20dp"
+            android:background="@color/design_default_color_secondary_variant"
+            android:paddingStart="20dp"
+            android:text="State"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</layout>
