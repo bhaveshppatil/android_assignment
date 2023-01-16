@@ -11,8 +11,18 @@
             android:id="@+id/ivDownloadPicture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/notificationButton"
+            android:layout_above="@id/btnViewPDF"
             android:layout_margin="20dp" />
+
+        <Button
+            android:id="@+id/btnViewPDF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/notificationButton"
+            android:layout_margin="30dp"
+            android:gravity="center"
+            android:text="Open PDF" />
 
         <Button
             android:id="@+id/notificationButton"
@@ -22,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="30dp"
             android:gravity="center"
-            android:text="Download Image" />
+            android:text="Download File" />
 
     </RelativeLayout>
 </layout>
