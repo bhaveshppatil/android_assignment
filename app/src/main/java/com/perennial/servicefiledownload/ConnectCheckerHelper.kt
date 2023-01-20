@@ -7,6 +7,7 @@ import androidx.annotation.RequiresPermission
 
 
 internal object ConnectCheckerHelper {
+    internal const val TIME_OUT_CONNECTION = 60 * 1000
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.INTERNET])
     fun isInternetAvailable(context: Context): Boolean {

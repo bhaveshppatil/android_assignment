@@ -1,65 +1,62 @@
 package com.perennial.servicefiledownload
 
 import android.app.*
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.util.Pair
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
 import com.perennial.broadcast.EventReceiver
+import com.perennial.builder.OnDownloadListener
 import com.perennial.database.DownloaderDao
-import com.perennial.database.DownloaderDatabase
 import com.perennial.model.DownloaderData
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.ref.WeakReference
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
-class ForegroundService() : Service() {
-    private val fileURl =
-        "https://www.shabakeh-mag.com/sites/default/files/files/attachment/1397/04/1530550032.pdf"
-    private lateinit var notificationChannel: NotificationChannel
-    private lateinit var notification: Notification.Builder
-    lateinit var downloadTask: DownloadFileTask
-    private lateinit var absolutePath: String
-    private var notificationID: Int = Random().nextInt()
+class ForegroundService(
+    val url: String,
+    val context: WeakReference<Context>,
+    val dao: DownloaderDao,
+    val absolutePath: String,
+    val downloadListener: OnDownloadListener,
+    var fileURl: String,
+    val notificationChannel: NotificationChannel
+) : Service() {
+
+    companion object {
+        lateinit var downloadTask: DownloadFileTask
+        lateinit var notification: Notification.Builder
+        var notificationID: Int = Random().nextInt()
+        val channelID: String = "Download Notification"
+    }
+
     private lateinit var eventReceiver: EventReceiver
     private lateinit var pendingIntent: PendingIntent
-    private lateinit var dao: DownloaderDao
     private var isTaskPaused: Boolean = false
-
-    val channelID: String = "Download Notification"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        absolutePath = intent?.getStringExtra("absolutePath").toString()
-
         eventReceiver = EventReceiver()
         PrefsHelper.init(this)
+
         val intent = Intent(this, EventReceiver()::class.java)
         intent.putExtra("isTaskPaused", true)
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        notificationChannel = NotificationChannel(
-            channelID,
-            "Foreground service",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         getSystemService(NotificationManager::class.java).createNotificationChannel(
             notificationChannel
         )
-        dao = DownloaderDatabase.getAppDatabase(this).downloaderDao()
+
         downloadTask = DownloadFileTask()
         downloadTask.execute(fileURl)
-
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -76,10 +73,11 @@ class ForegroundService() : Service() {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun onPreExecute() {
             super.onPreExecute()
+            downloadListener.onStart()
             isTaskPaused = PrefsHelper.read(PrefsHelper.IS_DOWNLOAD_PAUSED, false)
 
             if (!isTaskPaused) {
-                dao?.insertNewDownload(
+                dao.insertNewDownload(
                     DownloaderData(
                         0,
                         fileURl,
@@ -90,6 +88,7 @@ class ForegroundService() : Service() {
                     )
                 )
             }
+//            downloadListener.onResume()
             notification = Notification.Builder(this@ForegroundService, channelID)
                 .setContentText("File downloading")
                 .setContentTitle("Service enabled, Downloading in progress..")
@@ -111,17 +110,17 @@ class ForegroundService() : Service() {
 
                 if (isTaskPaused) {
                     PrefsHelper.write(PrefsHelper.IS_DOWNLOAD_PAUSED, false)
-                    val model = dao?.getDownloadByUrl(fileURl)
-                    percent = model?.percent!!
+                    val model = dao.getDownloadByUrl(fileURl)
+                    percent = model.percent
                     downloadedSize = model.size
                     totalSize = model.totalSize
-                    connection?.allowUserInteraction = true
-                    connection?.setRequestProperty("Range", "bytes="+model.size + "-")
+                    connection.allowUserInteraction = true
+                    connection.setRequestProperty("Range", "bytes=" + model.size + "-")
                     PrefsHelper.write(PrefsHelper.IS_DOWNLOAD_PAUSED, false)
                 }
                 connection.connect()
 
-                if (!isTaskPaused) totalSize = connection?.contentLength!!
+                if (!isTaskPaused) totalSize = connection.contentLength
 
                 downloadedFile = File("$absolutePath/kotlinR3.pdf")
                 if (downloadedFile.exists()) {
@@ -146,6 +145,7 @@ class ForegroundService() : Service() {
                     percent = (100.0f * downloadedSize.toFloat() / totalSize.toLong()).toInt()
                     if (previousPercent != percent) {
                         publishProgress(percent, downloadedSize, totalSize)
+                        downloadListener.onProgressUpdate(percent, downloadedSize, totalSize)
                         previousPercent = percent
                         dao?.updateDownload(
                             fileURl,
@@ -156,29 +156,31 @@ class ForegroundService() : Service() {
                     }
                 }
 
-             /*   while (inputStream.read(data).also { count = it } != -1) {
-                    if (isCancelled) {
-                        return null
-                    }
-                    total += count.toLong()
-                    if (fileLength > 0)
-                        publishProgress((total * 100 / fileLength).toInt())
-                    Log.d("Download progress", "${(total * 100 / fileLength).toInt()}")
+                /*   while (inputStream.read(data).also { count = it } != -1) {
+                       if (isCancelled) {
+                           return null
+                       }
+                       total += count.toLong()
+                       if (fileLength > 0)
+                           publishProgress((total * 100 / fileLength).toInt())
+                       Log.d("Download progress", "${(total * 100 / fileLength).toInt()}")
 
-                    output.write(data, 0, count)
-                }*/
+                       output.write(data, 0, count)
+                   }*/
+
                 bufferedOutputStream.flush()
                 bufferedOutputStream.close()
                 bufferedInputStream.close()
-                connection?.disconnect()
-             /*   output.flush()
-                output.close()
-                inputStream.close()*/
+                connection.disconnect()
+                /*   output.flush()
+                   output.close()
+                   inputStream.close()*/
             } catch (e: IOException) {
                 e.printStackTrace()
             }
             return null
         }
+
 
         override fun onProgressUpdate(vararg progress: Int?) {
             super.onProgressUpdate(*progress)
@@ -187,28 +189,56 @@ class ForegroundService() : Service() {
             startForeground(notificationID, notification.build())
         }
 
+        @RequiresApi(Build.VERSION_CODES.R)
         override fun onCancelled(result: String?) {
             super.onCancelled(result)
-            Log.d("onCancelled", result.toString())
+            notification.setAutoCancel(true)
+            notification.setContentTitle("Downloading cancelled")
+            notification.setContentText("File download cancelled")
+            notification.setOngoing(false)
+            notification.setProgress(0, 0, false)
+            notification.setFlag(Notification.FLAG_AUTO_CANCEL, true)
+            notification.setDeleteIntent(pendingIntent)
+            startForeground(notificationID, notification.build())
+            Log.d("onCancelled111", result.toString())
         }
 
         override fun onPostExecute(result: String?) {
             Log.d("Download error", "$result")
-
-            if (result != null) Toast.makeText(
-                this@ForegroundService,
-                "Download error: $result",
-                Toast.LENGTH_LONG
-            ).show() else {
-                Toast.makeText(this@ForegroundService, "File downloaded\n$absolutePath", Toast.LENGTH_LONG)
-                    .show()
-                notification.setContentTitle("File Downloaded")
-                notification.setContentText("Downloading completed.")
-                notification.setAutoCancel(true)
+            if (result != null)
+                downloadListener.onFailure(result)
+             else if (isCancelled) {
+                notification.setContentText("Downloading cancelled")
+                notification.setContentText("File download cancelled")
+                notification.setOngoing(false)
                 startForeground(notificationID, notification.build())
-                stopForeground(notificationID)
-            }
+            } else
+                downloadListener.onCompleted(absolutePath)
+                Toast.makeText(
+                    this@ForegroundService,
+                    "File downloaded\n$absolutePath",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            notification.setContentTitle("File Downloaded")
+            notification.setContentText("Downloading completed.")
+            notification.setAutoCancel(false)
+            startForeground(notificationID, notification.build())
+            stopForeground(notificationID)
+        }
+
+        internal fun cancel() {
+            downloadListener.onCancel()
+            cancel(true)
+            dao.updateDownload(url, percent, downloadedSize, totalSize)
+        }
+
+        internal fun pause() {
+            cancel(true)
+            dao.updateDownload(url, percent, downloadedSize, totalSize)
+            downloadListener.onPause()
         }
     }
 }
+
 

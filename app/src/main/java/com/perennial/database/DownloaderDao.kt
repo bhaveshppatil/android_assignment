@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-internal interface DownloaderDao {
+public interface DownloaderDao {
 
     @Query("SELECT * FROM download_data_table WHERE url IS :url")
     fun getDownloadByUrl(url: String): DownloaderData

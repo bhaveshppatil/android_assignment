@@ -2,6 +2,8 @@ package com.perennial.servicefiledownload
 
 import android.Manifest
 import android.app.ActivityManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -16,22 +18,34 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.perennial.`interface`.PerformDownloadActions
+import com.perennial.database.DownloaderDao
+import com.perennial.database.DownloaderDatabase
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PerformDownloadActions{
 
     private companion object {
         //PERMISSION request constant, assign any value
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
+        private const val FILE_URL = "https://www.ebookfrenzy.com/pdf_previews/Kotlin30EssentialsPreview.pdf"
     }
+
     private lateinit var absolutePath: String
+    private lateinit var notificationChannel: NotificationChannel
+    private lateinit var dao: DownloaderDao
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        notificationChannel = NotificationChannel(
+            ForegroundService.channelID,
+            "Foreground service",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        dao = DownloaderDatabase.getAppDatabase(this).downloaderDao()
         if (checkPermission()){
             toast("Permission already granted: create folder")
             createFolder()
@@ -42,8 +56,7 @@ class MainActivity : AppCompatActivity() {
         if (createFolder()){
             if (!isForegroundServiceRunning()){
                 val intent = Intent(this, ForegroundService::class.java)
-                intent.putExtra("absolutePath", absolutePath)
-                startForegroundService(intent)
+
             }
         }
     }
@@ -175,5 +188,41 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onTaskExecute() {
+
+    }
+
+    override fun onTaskProgressUpdate(max: Int, progress: Int, intermediate: Boolean) {
+
+    }
+
+    override fun onTaskCancelled(isCancelled: Boolean) {
+
+    }
+
+    override fun onPostExecute(result: String?) {
+
+    }
+
+    fun getSize(size: Int): String {
+        var s = ""
+        val kb = (size / 1024).toDouble()
+        val mb = kb / 1024
+        val gb = kb / 1024
+        val tb = kb / 1024
+        if (size < 1024) {
+            s = "$size Bytes"
+        } else if (size >= 1024 && size < 1024 * 1024) {
+            s = String.format("%.2f", kb) + " KB"
+        } else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) {
+            s = String.format("%.2f", mb) + " MB"
+        } else if (size >= 1024 * 1024 * 1024 && size < 1024 * 1024 * 1024 * 1024) {
+            s = String.format("%.2f", gb) + " GB"
+        } else if (size >= 1024 * 1024 * 1024 * 1024) {
+            s = String.format("%.2f", tb) + " TB"
+        }
+        return s
     }
 }
