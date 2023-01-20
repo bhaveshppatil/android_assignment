@@ -22,8 +22,7 @@ import java.net.URL
 import java.util.*
 
 class ForegroundService(
-    val url: String,
-    val context: WeakReference<Context>,
+    val context: Context,
     val dao: DownloaderDao,
     val absolutePath: String,
     val downloadListener: OnDownloadListener,
@@ -230,12 +229,12 @@ class ForegroundService(
         internal fun cancel() {
             downloadListener.onCancel()
             cancel(true)
-            dao.updateDownload(url, percent, downloadedSize, totalSize)
+            dao.updateDownload(fileURl, percent, downloadedSize, totalSize)
         }
 
         internal fun pause() {
             cancel(true)
-            dao.updateDownload(url, percent, downloadedSize, totalSize)
+            dao.updateDownload(fileURl, percent, downloadedSize, totalSize)
             downloadListener.onPause()
         }
     }

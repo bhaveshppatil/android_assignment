@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -18,47 +19,131 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.perennial.`interface`.PerformDownloadActions
+import androidx.databinding.DataBindingUtil
+import com.perennial.builder.Downloader
+import com.perennial.builder.OnDownloadListener
 import com.perennial.database.DownloaderDao
 import com.perennial.database.DownloaderDatabase
+import com.perennial.servicefiledownload.databinding.ActivityMainBinding
 import java.io.File
 
-class MainActivity : AppCompatActivity(), PerformDownloadActions{
+/***
+ * Still some corrections are pending.
+***/
+
+class MainActivity : AppCompatActivity() {
 
     private companion object {
         //PERMISSION request constant, assign any value
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
-        private const val FILE_URL = "https://www.ebookfrenzy.com/pdf_previews/Kotlin30EssentialsPreview.pdf"
+        private const val FILE_URL =
+            "https://www.ebookfrenzy.com/pdf_previews/Kotlin30EssentialsPreview.pdf"
     }
 
     private lateinit var absolutePath: String
     private lateinit var notificationChannel: NotificationChannel
     private lateinit var dao: DownloaderDao
+    private var downloader: Downloader? = null
+    private lateinit var binding: ActivityMainBinding
+    private val handler: Handler = Handler()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
         notificationChannel = NotificationChannel(
             ForegroundService.channelID,
             "Foreground service",
             NotificationManager.IMPORTANCE_DEFAULT
         )
         dao = DownloaderDatabase.getAppDatabase(this).downloaderDao()
-        if (checkPermission()){
+
+        if (checkPermission()) {
             toast("Permission already granted: create folder")
             createFolder()
-        }else{
+        } else {
             toast("Please provide required permissions")
             requestPermission()
         }
-        if (createFolder()){
-            if (!isForegroundServiceRunning()){
+        if (createFolder()) {
+            getDownloadUpdates()
+            if (!isForegroundServiceRunning()) {
                 val intent = Intent(this, ForegroundService::class.java)
 
             }
         }
+        binding.startDownloadBtn.setOnClickListener {
+            getDownloadUpdates()
+            downloader?.download()
+        }
+        binding.cancelDownloadBtn.setOnClickListener {
+            downloader?.cancelDownload()
+        }
+        binding.pauseDownloadBtn.setOnClickListener {
+            downloader?.pauseDownload()
+        }
+        binding.resumeDownloadBtn.setOnClickListener {
+            getDownloadUpdates()
+            downloader?.resumeDownload()
+        }
+    }
+
+    private fun getDownloadUpdates() {
+        downloader = Downloader.Builder(
+            this,
+            dao,
+            absolutePath,
+            FILE_URL,
+            notificationChannel,
+        ).downloadListener(object : OnDownloadListener {
+
+            override fun onStart() {
+                handler.post { binding.currentStatusTxt.text = "onStart" }
+                Log.d(TAG, "onStart")
+            }
+
+            override fun onPause() {
+                handler.post { binding.currentStatusTxt.text = "onPause" }
+                Log.d(TAG, "onPause")
+            }
+
+            override fun onResume() {
+                handler.post { binding.currentStatusTxt.text = "onResume" }
+                Log.d(TAG, "onResume")
+            }
+
+            override fun onProgressUpdate(percent: Int, downloadedSize: Int, totalSize: Int) {
+                handler.post {
+                    binding.currentStatusTxt.text = "onProgressUpdate"
+                    binding.percentTxt.text = percent.toString().plus("%")
+                    binding.sizeTxt.text = getSize(downloadedSize)
+                    binding.totalSizeTxt.text = getSize(totalSize)
+                    binding.downloadProgress.progress = percent
+                }
+                Log.d(
+                    TAG,
+                    "onProgressUpdate: percent --> $percent downloadedSize --> $downloadedSize totalSize --> $totalSize "
+                )
+            }
+
+            override fun onCompleted(file: String?) {
+                handler.post { binding.currentStatusTxt.text = "onCompleted" }
+                Log.d(TAG, "onCompleted: file --> $file")
+            }
+
+            override fun onFailure(reason: String?) {
+                handler.post { binding.currentStatusTxt.text = "onFailure: reason --> $reason" }
+                Log.d(TAG, "onFailure: reason --> $reason")
+            }
+
+            override fun onCancel() {
+                handler.post { binding.currentStatusTxt.text = "onCancel" }
+                Log.d(TAG, "onCancel")
+            }
+
+        }).build()
     }
 
     private fun isForegroundServiceRunning(): Boolean {
@@ -70,6 +155,7 @@ class MainActivity : AppCompatActivity(), PerformDownloadActions{
         }
         return false
     }
+
     private fun requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             //Android is 11(R) or above
@@ -140,7 +226,7 @@ class MainActivity : AppCompatActivity(), PerformDownloadActions{
         }
 
 
-    private fun createFolder(): Boolean{
+    private fun createFolder(): Boolean {
         //folder name
         val folderName = "DownloadXT"
         //create folder using name we just input
@@ -166,6 +252,7 @@ class MainActivity : AppCompatActivity(), PerformDownloadActions{
     fun toast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -188,22 +275,6 @@ class MainActivity : AppCompatActivity(), PerformDownloadActions{
                 }
             }
         }
-    }
-
-    override fun onTaskExecute() {
-
-    }
-
-    override fun onTaskProgressUpdate(max: Int, progress: Int, intermediate: Boolean) {
-
-    }
-
-    override fun onTaskCancelled(isCancelled: Boolean) {
-
-    }
-
-    override fun onPostExecute(result: String?) {
-
     }
 
     fun getSize(size: Int): String {

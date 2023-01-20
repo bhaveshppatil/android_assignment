@@ -41,22 +41,25 @@ class Downloader private constructor(downloadTask: ForegroundService.DownloadFil
     }
 
     class Builder(
-        private val url: String,
-        private val context: WeakReference<Context>,
+        private val context: Context,
         private val dao: DownloaderDao,
         private val absolutePath: String,
-        private val downloadListener: OnDownloadListener,
-        private var fileURl: String,
+        private val fileURl: String,
         private val notificationChannel: NotificationChannel
     ) {
+        private var downloadListener: OnDownloadListener? = null
+
+        fun downloadListener(downloadListener: OnDownloadListener): Builder {
+            this.downloadListener = downloadListener
+            return this
+        }
 
         fun build(): Downloader {
             val downloadTask = ForegroundService(
-                url = url,
                 context = context,
                 dao = dao,
                 absolutePath = absolutePath,
-                downloadListener = downloadListener,
+                downloadListener = downloadListener!!,
                 fileURl = fileURl,
                 notificationChannel = notificationChannel
             ).DownloadFileTask()
